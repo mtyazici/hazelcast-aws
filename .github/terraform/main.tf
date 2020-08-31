@@ -179,6 +179,7 @@ resource "aws_instance" "hazelcast_member" {
       "sleep 5",
     ]
   }
+
 }
 
 resource "null_resource" "verify_members" {
