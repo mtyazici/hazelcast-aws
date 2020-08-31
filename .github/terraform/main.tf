@@ -176,19 +176,31 @@ resource "aws_instance" "hazelcast_member" {
       "cd /home/${var.username}",
       "chmod 0755 start_aws_hazelcast_member.sh",
       "./start_aws_hazelcast_member.sh  ${var.aws_region} ${var.aws_tag_key} ${var.aws_tag_value} ${var.aws_connection_retries}",
-      "sleep 60",
-      "tail -n 20 ./logs/hazelcast.stdout.log"
     ]
   }
+}
+
+resource "null_resource" "verify_mancenter" {
+  count = var.member_count
+  depends_on = [aws_instance.hazelcast_member]
+  connection {
+    type        = "ssh"
+    user        = var.username
+    host        = aws_instance.hazelcast_member[count.index].public_ip
+    timeout     = "180s"
+    agent       = false
+    private_key = file("${var.local_key_path}/${var.aws_key_name}")
+  }
+
 
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.username}",
+      "tail -n 20 ./logs/hazelcast.stdout.log",
       "chmod 0755 verify_member_count.sh",
       "sh verify_member_count.sh  ${var.member_count}",
     ]
   }
-
 }
 
 resource "aws_instance" "hazelcast_mancenter" {
@@ -240,8 +252,6 @@ resource "aws_instance" "hazelcast_mancenter" {
       "cd /home/${var.username}",
       "chmod 0755 start_aws_hazelcast_management_center.sh",
       "./start_aws_hazelcast_management_center.sh ${var.hazelcast_mancenter_version}  ${var.aws_region} ${var.aws_tag_key} ${var.aws_tag_value} ",
-      "sleep 20",
-      "tail -n 20 ./logs/mancenter.stdout.log",
     ]
   }
 }
@@ -262,6 +272,7 @@ resource "null_resource" "verify_mancenter" {
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.username}",
+      "tail -n 20 ./logs/mancenter.stdout.log",
       "chmod 0755 verify_mancenter.sh",
       "./verify_mancenter.sh  ${var.member_count}",
     ]
