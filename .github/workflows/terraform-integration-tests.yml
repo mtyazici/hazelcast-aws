@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - test1
     paths:
       - 'src/**'
       - 'pom.xml'
