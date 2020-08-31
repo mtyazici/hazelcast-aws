@@ -196,6 +196,7 @@ resource "null_resource" "verify_members" {
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.username}",
+      "sleep 15",
       "tail -n 20 ./logs/hazelcast.stdout.log",
       "chmod 0755 verify_member_count.sh",
       "sh verify_member_count.sh  ${var.member_count}",
