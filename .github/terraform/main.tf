@@ -243,7 +243,6 @@ resource "aws_instance" "hazelcast_mancenter" {
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
       "sudo apt-get update",
       "sudo apt-get -y install openjdk-8-jdk wget unzip",
-      "sleep 30"
     ]
   }
 
@@ -272,6 +271,7 @@ resource "null_resource" "verify_mancenter" {
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.username}",
+      "sleep 15",
       "tail -n 20 ./logs/mancenter.stdout.log",
       "chmod 0755 verify_mancenter.sh",
       "./verify_mancenter.sh  ${var.member_count}",
