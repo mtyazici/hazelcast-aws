@@ -251,6 +251,7 @@ resource "aws_instance" "hazelcast_mancenter" {
     ]
   }
 
+
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.username}",
