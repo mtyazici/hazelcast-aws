@@ -250,7 +250,6 @@ resource "aws_instance" "hazelcast_mancenter" {
       "sudo apt-get -y install openjdk-8-jdk wget unzip",
     ]
   }
-
   provisioner "remote-exec" {
     inline = [
       "cd /home/${var.username}",
