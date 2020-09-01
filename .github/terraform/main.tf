@@ -181,7 +181,6 @@ resource "aws_instance" "hazelcast_member" {
   }
 }
 
-
 resource "null_resource" "verify_members" {
   count      = var.member_count
   depends_on = [aws_instance.hazelcast_member]
