@@ -59,7 +59,7 @@ jobs:
                  | grep -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)
             wget -q "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/$snapshot_link"
           else
-            wget -q"https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$hz_version/hazelcast-$hz_version.jar"
+            wget -q "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$hz_version/hazelcast-$hz_version.jar"
           fi
           cp hazelcast*.jar ~/lib/hazelcast.jar
           echo "DONE"
