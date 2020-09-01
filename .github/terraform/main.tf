@@ -260,7 +260,6 @@ resource "aws_instance" "hazelcast_mancenter" {
   }
 }
 
-
 resource "null_resource" "verify_mancenter" {
 
   depends_on = [aws_instance.hazelcast_member]
