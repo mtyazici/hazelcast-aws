@@ -237,7 +237,6 @@ resource "aws_instance" "hazelcast_mancenter" {
     destination = "/home/${var.username}/verify_mancenter.sh"
   }
 
-
   provisioner "file" {
     source      = "hazelcast-client.yaml"
     destination = "/home/${var.username}/hazelcast-client.yaml"
