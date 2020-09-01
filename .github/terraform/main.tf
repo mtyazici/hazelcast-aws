@@ -226,7 +226,6 @@ resource "aws_instance" "hazelcast_mancenter" {
     private_key = file("${var.local_key_path}/${var.aws_key_name}")
   }
 
-
   provisioner "file" {
     source      = "scripts/start_aws_hazelcast_management_center.sh"
     destination = "/home/${var.username}/start_aws_hazelcast_management_center.sh"

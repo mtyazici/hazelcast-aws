@@ -57,7 +57,7 @@ jobs:
           if [[ $hz_version == *"SNAPSHOT"* ]]; then
             wo_SNAPSHOT=$( echo $hz_version | grep -Po "[.a-zA-Z0-9]+(?=-SNAPSHOT)" )
             snapshot_link=$(curl -s "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/" 2>&1 \
-              | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar")
+              | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)
             wget "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/$snapshot_link"
           else
             wget "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$hz_version/hazelcast-$hz_version.jar"
