@@ -49,6 +49,9 @@ jobs:
           if [[ $hz_version == *"SNAPSHOT"* ]]; then
             curl "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/4.1-SNAPSHOT/" 2>/dev/null
             wo_SNAPSHOT=$( echo $hz_version | grep -Po "[.a-zA-Z0-9]+(?=-SNAPSHOT)" )
+            snapshot_link=$(curl "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/" 2>/dev/null \
+             | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)
+            echo $snapshot_link
           fi
 
       # DOWNLOAD HAZELCAST JAR WITH VERSION DEFINED IN POM.XML
