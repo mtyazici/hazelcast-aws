@@ -231,6 +231,7 @@ resource "aws_instance" "hazelcast_mancenter" {
     destination = "/home/${var.username}/start_aws_hazelcast_management_center.sh"
   }
 
+
   provisioner "file" {
     source      = "scripts/verify_mancenter.sh"
     destination = "/home/${var.username}/verify_mancenter.sh"
