@@ -46,8 +46,8 @@ jobs:
       - name: Build hazelcast-aws jar
         run: |
           cd hazelcast-aws
- #         mvn clean install -DskipTests
-  #        cp target/hazelcast-aws-*-SNAPSHOT.jar ~/lib/hazelcast-aws.jar
+          mvn clean install -DskipTests
+          cp target/hazelcast-aws-*-SNAPSHOT.jar ~/lib/hazelcast-aws.jar
 
       # DOWNLOAD HAZELCAST JAR WITH VERSION DEFINED IN POM.XML
       - name: Find Hazelcast version from pom.xml
@@ -56,50 +56,11 @@ jobs:
           hz_version=$(cat hazelcast-aws/pom.xml | grep -m 1 -Po "<hazelcast.version>\K[-_.a-zA-Z0-9]+(?=</hazelcast.version)")
           if [[ $hz_version == *"SNAPSHOT"* ]]; then
             wo_SNAPSHOT=$( echo $hz_version | grep -Po "[.a-zA-Z0-9]+(?=-SNAPSHOT)" )
-            snapshot_link="$(echo "<td><a href=\"https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/4.1-SNAPSHOT/hazelcast-4.1-20200827.135202-276.jar\">hazelcast-4.1-20200827.135202-276.jar</a></td><td>Thu Aug 27 13:52:02 UTC 2020</td>"  | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)"
+            snapshot_link=$(curl -s "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/" 2>&1 \
+              | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)
+            wget "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/$snapshot_link"
+          else
+            wget "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$hz_version/hazelcast-$hz_version.jar"
           fi
-#         echo $(wget --version)
-#          wget "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/$snapshot_link"
-#        else
-#          wget "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$hz_version/hazelcast-$hz_version.jar"
-#       cp hazelcast*.jar ~/lib/hazelcast.jar
+          cp hazelcast*.jar ~/lib/hazelcast.jar
 
-      #BUILD TERRAFORM
-      - name : Set-up Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.13.0
-
-      - name: Create unique prefix for resources
-        run: |
-          sed -i -e "s/SET_PREFIX/${GITHUB_WORKFLOW}-${GITHUB_RUN_ID}/g" hazelcast-aws/.github/terraform/hazelcast.yaml
-          sed -i -e "s/SET_PREFIX/\"${GITHUB_WORKFLOW}-${GITHUB_RUN_ID}\"/g" hazelcast-aws/.github/terraform/terraform.tfvars
-
-      - name: Terraform Init
-        run: cd hazelcast-aws/.github/terraform && terraform init
-
-      - name: Terraform Format
-        run: cd hazelcast-aws/.github/terraform  && terraform fmt
-
-      - name: Install private key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: id_rsa
-          known_hosts: " "
-
-      - name: Install public key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PUBLIC_KEY }}
-          name: id_rsa.pub
-          known_hosts: " "
-
-      - name: Terraform Apply
-        run: |
-          cd hazelcast-aws/.github/terraform  && terraform apply -auto-approve
-
-      - name: Terraform Destroy
-        if: ${{ always() }}
-        run: |
-          cd hazelcast-aws/.github/terraform  && terraform destroy -auto-approve
