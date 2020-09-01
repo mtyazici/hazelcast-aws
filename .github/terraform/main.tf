@@ -217,6 +217,7 @@ resource "aws_instance" "hazelcast_mancenter" {
     "${var.aws_tag_key}" = var.aws_tag_value
   }
 
+
   connection {
     type        = "ssh"
     user        = var.username
