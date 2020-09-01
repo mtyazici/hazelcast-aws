@@ -45,7 +45,11 @@ jobs:
 
       - name: TEST
         run: |
-          curl "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/4.1-SNAPSHOT/"
+          hz_version=$(cat hazelcast-aws/pom.xml | grep -m 1 -Po "<hazelcast.version>\K[-_.a-zA-Z0-9]+(?=</hazelcast.version)")
+          if [[ $hz_version == *"SNAPSHOT"* ]]; then
+            curl "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/4.1-SNAPSHOT/"
+            wo_SNAPSHOT=$( echo $hz_version | grep -Po "[.a-zA-Z0-9]+(?=-SNAPSHOT)" )
+          fi
 
       # DOWNLOAD HAZELCAST JAR WITH VERSION DEFINED IN POM.XML
 #      - name: Find Hazelcast version from pom.xml
