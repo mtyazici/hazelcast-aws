@@ -56,7 +56,7 @@ jobs:
           hz_version=$(cat hazelcast-aws/pom.xml | grep -m 1 -Po "<hazelcast.version>\K[-_.a-zA-Z0-9]+(?=</hazelcast.version)")
           if [[ $hz_version == *"SNAPSHOT"* ]]; then
             wo_SNAPSHOT=$( echo $hz_version | grep -Po "[.a-zA-Z0-9]+(?=-SNAPSHOT)" )
-            snapshot_link="$(curl -s "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/" | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)"
+            snapshot_link="$(cat "<td><a href=\"https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/4.1-SNAPSHOT/hazelcast-4.1-20200827.135202-276.jar\">hazelcast-4.1-20200827.135202-276.jar</a></td><td>Thu Aug 27 13:52:02 UTC 2020</td>"  | grep -m 1 -Po  "hazelcast-$wo_SNAPSHOT-\d{8}.\d{6}-\d+\.jar" | head -1)"
           fi
 #         echo $(wget --version)
 #          wget "https://oss.sonatype.org/content/repositories/snapshots/com/hazelcast/hazelcast/$hz_version/$snapshot_link"
