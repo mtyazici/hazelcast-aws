@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - test4
     paths:
       - 'src/**'
       - 'pom.xml'
@@ -61,6 +61,7 @@ jobs:
           else
             wget -q "https://repo1.maven.org/maven2/com/hazelcast/hazelcast/$hz_version/hazelcast-$hz_version.jar"
           fi
+          echo hazelcast*.jar
           cp hazelcast*.jar ~/lib/hazelcast.jar
           echo "DONE"
 
